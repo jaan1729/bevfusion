@@ -228,7 +228,8 @@ class BaseDepthTransform(BaseTransform):
         lidar_aug_matrix,
         metas,
         **kwargs,
-    ):
+    ):  
+        N_Cams = img.shape[1]
         rots = sensor2ego[..., :3, :3]
         trans = sensor2ego[..., :3, 3]
         intrins = cam_intrinsic[..., :3, :3]
@@ -239,8 +240,9 @@ class BaseDepthTransform(BaseTransform):
         extra_rots = lidar_aug_matrix[..., :3, :3]
         extra_trans = lidar_aug_matrix[..., :3, 3]
 
-        batch_size = len(points)
-        depth = torch.zeros(batch_size, 6, 1, *self.image_size).to(points[0].device)
+        batch_size = 1#len(points)
+        print(self.image_size)
+        depth = torch.zeros(batch_size, N_Cams, 1, *self.image_size).to(points[0].device) # N_cams is constant
 
         for b in range(batch_size):
             cur_coords = points[b][:, :3].transpose(1, 0)
@@ -270,7 +272,7 @@ class BaseDepthTransform(BaseTransform):
                 & (cur_coords[..., 1] < self.image_size[1])
                 & (cur_coords[..., 1] >= 0)
             )
-            for c in range(6):
+            for c in range(N_Cams): #N_cams is constant
                 masked_coords = cur_coords[c, on_img[c]].long()
                 masked_dist = dist[c, on_img[c]]
                 depth[b, c, 0, masked_coords[:, 0], masked_coords[:, 1]] = masked_dist

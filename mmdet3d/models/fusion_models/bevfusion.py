@@ -41,6 +41,7 @@ class BEVFusion(Base3DFusionModel):
                     "vtransform": build_vtransform(encoders["camera"]["vtransform"]),
                 }
             )
+            
         if encoders.get("lidar") is not None:
             self.encoders["lidar"] = nn.ModuleDict(
                 {
@@ -178,8 +179,10 @@ class BEVFusion(Base3DFusionModel):
                     lidar_aug_matrix,
                     metas,
                 )
+                print('camera featuress extracted')
             elif sensor == "lidar":
                 feature = self.extract_lidar_features(points)
+                print('lidar featuress extracted')
             else:
                 raise ValueError(f"unsupported sensor: {sensor}")
             features.append(feature)
