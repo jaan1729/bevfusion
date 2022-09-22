@@ -13,6 +13,7 @@ from mmdet3d.models.builder import (
     build_vtransform,
 )
 from mmdet3d.ops import Voxelization
+#from mmcv.ops.voxelize import Voxelization, voxelization
 from mmdet3d.models import FUSIONMODELS
 
 from .base import Base3DFusionModel
@@ -165,7 +166,8 @@ class BEVFusion(Base3DFusionModel):
         **kwargs,
     ):
         features = []
-        for sensor in self.encoders:
+        sensors = ['camera', 'lidar']
+        for sensor in sensors:
             if sensor == "camera":
                 feature = self.extract_camera_features(
                     img,
@@ -179,10 +181,10 @@ class BEVFusion(Base3DFusionModel):
                     lidar_aug_matrix,
                     metas,
                 )
-                print('camera featuress extracted')
+                #print('camera featuress extracted')
             elif sensor == "lidar":
                 feature = self.extract_lidar_features(points)
-                print('lidar featuress extracted')
+                #print('lidar featuress extracted')
             else:
                 raise ValueError(f"unsupported sensor: {sensor}")
             features.append(feature)

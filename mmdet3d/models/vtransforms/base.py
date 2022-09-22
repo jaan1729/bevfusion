@@ -241,7 +241,7 @@ class BaseDepthTransform(BaseTransform):
         extra_trans = lidar_aug_matrix[..., :3, 3]
 
         batch_size = 1#len(points)
-        print(self.image_size)
+        #print(self.image_size)
         depth = torch.zeros(batch_size, N_Cams, 1, *self.image_size).to(points[0].device) # N_cams is constant
 
         for b in range(batch_size):
